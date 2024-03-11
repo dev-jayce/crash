@@ -13,3 +13,6 @@ spring:
     url: jdbc:postgresql://localhost:15432/prod-crash-db
     username: crash-master
     password: crash-postgres-password
+
+jwt:
+  secret-key: X2NyYXNoX3NlcnZpY2Vfc3VwZXJfc2VjcmV0X2tleV8=
