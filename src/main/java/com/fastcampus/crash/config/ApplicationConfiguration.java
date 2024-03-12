@@ -9,6 +9,7 @@ import com.fastcampus.crash.model.sessionspeaker.SessionSpeakerPostRequestBody;
 import com.fastcampus.crash.model.user.UserSignUpRequestBody;
 import com.fastcampus.crash.service.CrashSessionService;
 import com.fastcampus.crash.service.SessionSpeakerService;
+import com.fastcampus.crash.service.SlackService;
 import com.fastcampus.crash.service.UserService;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
@@ -29,6 +30,7 @@ import org.springframework.web.client.RestClient;
 @Configuration
 public class ApplicationConfiguration {
 
+  @Autowired private SlackService slackService;
   private static final RestClient restClient = RestClient.create();
   private static final Logger logger = LoggerFactory.getLogger(ApplicationConfiguration.class);
 
@@ -45,17 +47,15 @@ public class ApplicationConfiguration {
     return new ApplicationRunner() {
       @Override
       public void run(ApplicationArguments args) throws Exception {
-        //        createTestUsers();
-        //        createTestSessionSpeakers(10);
-        // TODO: Bitcoin USD 가격 조회
-        var bitcoinUsdPrice = getBitcoinUsdPrice();
-        // TODO: USD to KRW 환율 조회
-        var usdToKrwExchangeRate = getUsdToKrwExchangeRate();
-        // TODO: Bitcoin KRW 가격 계산
-        var koreanPremium = 1.1;
-        var bitcoinKrwPrice = bitcoinUsdPrice * usdToKrwExchangeRate * koreanPremium;
-
-        logger.info(String.format("BTC KRW: %.2f", bitcoinKrwPrice));
+        createTestUsers();
+        createTestSessionSpeakers(10);
+        //        var bitcoinUsdPrice = getBitcoinUsdPrice();
+        //        var usdToKrwExchangeRate = getUsdToKrwExchangeRate();
+        //        var koreanPremium = 1.1;
+        //        var bitcoinKrwPrice = bitcoinUsdPrice * usdToKrwExchangeRate * koreanPremium;
+        //
+        //        logger.info(String.format("BTC KRW: %.2f", bitcoinKrwPrice));
+        //        slackService.send();
       }
     };
   }
