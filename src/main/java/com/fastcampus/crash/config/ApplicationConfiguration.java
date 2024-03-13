@@ -45,17 +45,17 @@ public class ApplicationConfiguration {
     return new ApplicationRunner() {
       @Override
       public void run(ApplicationArguments args) throws Exception {
-        //        createTestUsers();
-        //        createTestSessionSpeakers(10);
-        // TODO: Bitcoin USD 가격 조회
-        var bitcoinUsdPrice = getBitcoinUsdPrice();
-        // TODO: USD to KRW 환율 조회
-        var usdToKrwExchangeRate = getUsdToKrwExchangeRate();
-        // TODO: Bitcoin KRW 가격 계산
-        var koreanPremium = 1.1;
-        var bitcoinKrwPrice = bitcoinUsdPrice * usdToKrwExchangeRate * koreanPremium;
-
-        logger.info(String.format("BTC KRW: %.2f", bitcoinKrwPrice));
+        createTestUsers();
+        createTestSessionSpeakers(10);
+        //        // Bitcoin USD 가격 조회
+        //        var bitcoinUsdPrice = getBitcoinUsdPrice();
+        //        // USD to KRW 환율 조회
+        //        var usdToKrwExchangeRate = getUsdToKrwExchangeRate();
+        //        // Bitcoin KRW 가격 계산
+        //        var koreanPremium = 1.1;
+        //        var bitcoinKrwPrice = bitcoinUsdPrice * usdToKrwExchangeRate * koreanPremium;
+        //
+        //        logger.info(String.format("BTC KRW: %.2f", bitcoinKrwPrice));
       }
     };
   }
