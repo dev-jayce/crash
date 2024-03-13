@@ -10,6 +10,7 @@ import com.fastcampus.crash.service.RegistrationService;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +23,14 @@ public class CrashSessionController {
   @Autowired private RegistrationService registrationService;
 
   @GetMapping
+  @Cacheable(value = "sessions")
   public ResponseEntity<List<CrashSession>> getCrashSessions() {
     var crashSessions = crashSessionService.getCrashSessions();
     return ResponseEntity.ok(crashSessions);
   }
 
   @GetMapping("/{sessionId}")
+  @Cacheable(value = "session", key = "#sessionId")
   public ResponseEntity<CrashSession> getCrashSessionBySessionId(@PathVariable Long sessionId) {
     var crashSession = crashSessionService.getCrashSessionBySessionId(sessionId);
     return ResponseEntity.ok(crashSession);

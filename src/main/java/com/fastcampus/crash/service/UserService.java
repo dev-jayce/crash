@@ -9,6 +9,7 @@ import com.fastcampus.crash.model.user.UserLoginRequestBody;
 import com.fastcampus.crash.model.user.UserSignUpRequestBody;
 import com.fastcampus.crash.repository.UserEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,6 +26,7 @@ public class UserService implements UserDetailsService {
   @Autowired private JwtService jwtService;
 
   @Override
+  @Cacheable(value = "user", key = "#username")
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     return getUserEntityByUsername(username);
   }
