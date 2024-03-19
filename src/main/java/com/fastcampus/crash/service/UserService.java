@@ -7,6 +7,7 @@ import com.fastcampus.crash.model.user.User;
 import com.fastcampus.crash.model.user.UserAuthenticationResponse;
 import com.fastcampus.crash.model.user.UserLoginRequestBody;
 import com.fastcampus.crash.model.user.UserSignUpRequestBody;
+import com.fastcampus.crash.repository.UserEntityCacheRepository;
 import com.fastcampus.crash.repository.UserEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +20,8 @@ import org.springframework.stereotype.Service;
 public class UserService implements UserDetailsService {
 
   @Autowired private UserEntityRepository userEntityRepository;
+
+  @Autowired private UserEntityCacheRepository userEntityCacheRepository;
 
   @Autowired private BCryptPasswordEncoder passwordEncoder;
 
@@ -60,8 +63,16 @@ public class UserService implements UserDetailsService {
   }
 
   private UserEntity getUserEntityByUsername(String username) {
-    return userEntityRepository
-        .findByUsername(username)
-        .orElseThrow(() -> new UserNotFoundException(username));
+    return userEntityCacheRepository
+        .getUserEntityCache(username)
+        .orElseGet(
+            () -> {
+              var userEntity =
+                  userEntityRepository
+                      .findByUsername(username)
+                      .orElseThrow(() -> new UserNotFoundException(username));
+              userEntityCacheRepository.setUserEntityCache(userEntity);
+              return userEntity;
+            });
   }
 }

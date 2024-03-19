@@ -1,6 +1,7 @@
 package com.fastcampus.crash.model.entity;
 
 import com.fastcampus.crash.model.user.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.ZonedDateTime;
 import java.util.Collection;
@@ -112,6 +113,7 @@ public class UserEntity implements UserDetails {
   }
 
   @Override
+  @JsonIgnore
   public Collection<? extends GrantedAuthority> getAuthorities() {
     if (this.role.equals(Role.ADMIN)) {
       return List.of(
@@ -137,21 +139,25 @@ public class UserEntity implements UserDetails {
   }
 
   @Override
+  @JsonIgnore
   public boolean isAccountNonExpired() {
     return true;
   }
 
   @Override
+  @JsonIgnore
   public boolean isAccountNonLocked() {
     return true;
   }
 
   @Override
+  @JsonIgnore
   public boolean isCredentialsNonExpired() {
     return true;
   }
 
   @Override
+  @JsonIgnore
   public boolean isEnabled() {
     return true;
   }

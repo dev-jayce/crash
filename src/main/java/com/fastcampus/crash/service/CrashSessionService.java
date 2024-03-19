@@ -5,6 +5,7 @@ import com.fastcampus.crash.model.crashsession.CrashSession;
 import com.fastcampus.crash.model.crashsession.CrashSessionPatchRequestBody;
 import com.fastcampus.crash.model.crashsession.CrashSessionPostRequestBody;
 import com.fastcampus.crash.model.entity.CrashSessionEntity;
+import com.fastcampus.crash.repository.CrashSessionCacheRepository;
 import com.fastcampus.crash.repository.CrashSessionEntityRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,15 +15,31 @@ import org.springframework.util.ObjectUtils;
 @Service
 public class CrashSessionService {
   @Autowired private CrashSessionEntityRepository crashSessionEntityRepository;
+  @Autowired private CrashSessionCacheRepository crashSessionCacheRepository;
   @Autowired private SessionSpeakerService sessionSpeakerService;
 
   public List<CrashSession> getCrashSessions() {
-    return crashSessionEntityRepository.findAll().stream().map(CrashSession::from).toList();
+    var crashSessions = crashSessionCacheRepository.getCrashSessionsListCache();
+    if (!ObjectUtils.isEmpty(crashSessions)) {
+      return crashSessions;
+    } else {
+      var crashSessionsList =
+          crashSessionEntityRepository.findAll().stream().map(CrashSession::from).toList();
+      crashSessionCacheRepository.setCrashSessionsListCache(crashSessionsList);
+      return crashSessionsList;
+    }
   }
 
   public CrashSession getCrashSessionBySessionId(Long sessionId) {
-    var crashSessionEntity = getCrashSessionEntityBySessionId(sessionId);
-    return CrashSession.from(crashSessionEntity);
+    return crashSessionCacheRepository
+        .getCrashSessionCache(sessionId)
+        .orElseGet(
+            () -> {
+              var crashSessionEntity = getCrashSessionEntityBySessionId(sessionId);
+              var crashSession = CrashSession.from(crashSessionEntity);
+              crashSessionCacheRepository.setCrashSessionCache(crashSession);
+              return crashSession;
+            });
   }
 
   public CrashSession createCrashSession(CrashSessionPostRequestBody crashSessionPostRequestBody) {
